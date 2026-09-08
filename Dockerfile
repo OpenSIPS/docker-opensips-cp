@@ -1,4 +1,4 @@
-FROM debian:bullseye
+FROM debian:trixie
 LABEL maintainer=darius.stefan@opensips.org
 
 USER root
