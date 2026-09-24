@@ -5,6 +5,13 @@ on:
   repository_dispatch:
     types: [OpenSIPS CP trigger]
   workflow_dispatch:
+    inputs:
+      branch:
+        description: opensips-cp branch to build
+        default: master
+      docker_tag:
+        description: Image tag to push
+        default: latest
 
 jobs:
 
@@ -29,14 +36,12 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
     
     - name: Determine tag
+      env:
+        IN_BRANCH: ${{ inputs.branch || github.event.client_payload.branch }}
+        IN_TAG: ${{ inputs.docker_tag || github.event.client_payload.docker_tag }}
       run: |
-        if [ "${{ github.event_name }}" == "repository_dispatch" ]; then
-          echo "BRANCH=${{ github.event.client_payload.branch && github.event.client_payload.branch || 'master' }}" >> $GITHUB_ENV
-          echo "DOCKER_TAG=${{ github.event.client_payload.docker_tag }}" >> $GITHUB_ENV
-        else
-          echo "DOCKER_TAG=latest" >> $GITHUB_ENV
-          echo "BRANCH=master" >> $GITHUB_ENV
-        fi
+        echo "BRANCH=${IN_BRANCH:-master}" >> "$GITHUB_ENV"
+        echo "DOCKER_TAG=${IN_TAG:-latest}" >> "$GITHUB_ENV"
 
     - name: Build and push Docker image
       uses: docker/build-push-action@v7
