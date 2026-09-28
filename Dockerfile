@@ -18,7 +18,7 @@ WORKDIR /var/www/html/
 RUN git clone --single-branch -b ${OPENSIPS_CP_VERSION} https://github.com/OpenSIPS/opensips-cp.git &&\
     chown -R www-data:www-data /var/www/html/opensips-cp/ &&\
     git config --global --add safe.directory /var/www/html/opensips-cp &&\
-    apt-get -y install php php-mysql php-gd php-pear php-cli php-apcu &&\
+    apt-get -y install php php-mysql php-sqlite3 php-pgsql php-gd php-pear php-cli php-apcu &&\
     a2ensite opensips-cp.conf &&\
     a2dissite 000-default.conf &&\
     a2enmod rewrite &&\
